@@ -1,3 +1,4 @@
+#!/usr/bin/python
 from math import log10
 
 Primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
@@ -20,10 +21,9 @@ def GetAnagramDigits (N):
     return AnagramDigits
 
 if __name__ == '__main__':
-    while 1:
-        Num = int(raw_input('Input: '))
-        Digits = GetAnagramDigits(Num)
-        if Digits:
-            print ' '.join(Digits)
-        else:
-            print 'NO'
+    Num = int(raw_input())
+    Digits = GetAnagramDigits(Num)
+    if Digits:
+        print ' '.join(Digits)
+    else:
+        print 'NO'
