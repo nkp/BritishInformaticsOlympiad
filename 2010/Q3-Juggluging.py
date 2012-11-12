@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+from collections import deque
+
 def get_jug_value(state, i):
     return state >> i*16+8 & 0xFF
 
@@ -44,40 +46,45 @@ def initial_state(capacities):
         i |= capacity
     return i
 
+def num_jugs(state):
+    if state > 4294967296: # Capacity for third jug > 0
+        return 3
+    if state > 65536: # Capacity for second jug > 0
+        return 2
+    return 1
+
 def get_child_states(parent):
     states = []
-    for i in xrange(3):
+    nJugs = num_jugs(parent)
+    for i in xrange(nJugs):
         value, capacity = get_jug_value(parent, i), get_jug_capacity(parent, i)
-        if capacity == 0: continue # 0 capacity indicates no more jugs.
         if value < capacity:
             states.append(fill_jug(parent, i))
         if value > 0:
             states.append(empty_jug(parent, i))
-            for j in xrange(3):
-                if i == j or get_jug_capacity(parent, j) == 0: continue
+            for j in xrange(nJugs):
+                if i == j or get_jug_value(parent, j) == get_jug_capacity(parent, j): continue 
                 states.append(pour_jug(parent, i, j))
     return states
 
-def dfs(origin, target, history, depth, max_depth):
-    if depth == max_depth: 
+def bfs(origin, target):
+    distances = {origin:0}
+    q = deque([origin])
+    while q:
+        state = q.popleft()
+        distance = distances[state]
         for i in xrange(3):
-            if get_jug_value(origin, i) == target:
-                return True 
-        return False
-    if origin in history and history[origin] <= depth:
-        return False
-    history[origin] = depth
-    children = get_child_states(origin)
-    for child in children:
-        result = dfs(child, target, history, depth+1, max_depth)
-        if result:
-            return result
+            if get_jug_value(state, i) == target:
+                return distance
+        children = get_child_states(state)
+        for child in children:
+            if not child in distances: # Ensure no cycles.
+                distances[child] = distance + 1
+                q.append(child)
+
 
 if __name__ == '__main__':
     n_jugs, target = map(int, raw_input().split())
     origin = initial_state(map(int, raw_input().split()))
-    for max_depth in xrange(1, 251):
-        if dfs(origin, target, {}, 0, max_depth):
-            print max_depth
-            break
+    print bfs(origin, target)
 
