@@ -3,7 +3,6 @@ from operator import itemgetter
 DIGITS = ['ZERO', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE']
 INF = float('inf')
 
-# Who cares about space in a BIO?
 def memoize(f):
     mem = {}
     MEMOIZE_DEFAULT = '__MEMOIZE_DEFAULT__'
