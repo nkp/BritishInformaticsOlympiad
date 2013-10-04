@@ -2,14 +2,15 @@
 from math import sqrt
 
 def gen_primes(n):
-    primes = range(2, n)
-    for i in xrange(int(sqrt(n))):
+    primes = range(n)
+    primes[1] = 0
+    for i in xrange(2, int(sqrt(n))+1):
         if primes[i] == 0: continue
-        j = i + primes[i]
-        while j < len(primes):
+        j = i**2
+        while j < n:
             primes[j] = 0
-            j += primes[i]
-    return filter(lambda x: x, primes) # Remove all 0s.
+            j += i
+    return filter(None, primes) # Remove all 0s.
 
 n = int(raw_input())
 primes = gen_primes(n+1)
